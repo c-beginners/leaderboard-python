@@ -1,4 +1,3 @@
-from redis import Redis, StrictRedis, ConnectionPool
 from leaderboard.tie_ranking_leaderboard import TieRankingLeaderboard
 import unittest
 import time
@@ -8,7 +7,7 @@ import sure
 class TieRankingLeaderboardTest(unittest.TestCase):
 
     def setUp(self):
-        self.leaderboard = TieRankingLeaderboard('ties')
+        self.leaderboard = TieRankingLeaderboard('ties', decode_responses=True)
 
     def tearDown(self):
         self.leaderboard.redis_connection.flushdb()
@@ -229,6 +228,12 @@ class TieRankingLeaderboardTest(unittest.TestCase):
         self.leaderboard.rank_for('member_3').should.equal(1)
         self.leaderboard.rank_for('member_1').should.equal(2)
         self.leaderboard.rank_for('member_2').should.equal(2)
+
+    def test_rank_member_across(self):
+        self.leaderboard.rank_member_across(
+            ['highscores', 'more_highscores'], 'david', 50000, {'member_name': 'david'})
+        len(self.leaderboard.leaders_in('highscores', 1)).should.equal(1)
+        len(self.leaderboard.leaders_in('more_highscores', 1)).should.equal(1)
 
     def test_it_should_correctly_pop_ties_namespace_from_options(self):
         self.leaderboard = TieRankingLeaderboard('ties', ties_namespace='ties_namespace')

@@ -116,8 +116,8 @@ class TieRankingLeaderboard(Leaderboard):
         @param score [float] Member score.
         @param member_data [String] Optional member data.
         '''
-        for leaderboard in leaderboards:
-            self.rank_member_in(leaderboard, member, score, member_data)
+        for leaderboard_name in leaderboards:
+            self.rank_member_in(leaderboard_name, member, score, member_data)
 
     def rank_members_in(self, leaderboard_name, members_and_scores):
         '''
